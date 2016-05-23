@@ -248,7 +248,7 @@ const describeField = (name, structure, combineReducers, expect) => {
       const stub = TestUtils.findRenderedComponentWithType(dom, Field)
       expect(stub.dirty).toBe(false)
     })
-    
+
     it('should provide pristine getter that is false when dirty', () => {
       const store = makeStore({
         testForm: {
@@ -315,7 +315,7 @@ const describeField = (name, structure, combineReducers, expect) => {
         </Provider>
       )
       expect(input).toHaveBeenCalled()
-      expect(input.calls[0].arguments[0].value).toBe('bar')
+      expect(input.calls[ 0 ].arguments[ 0 ].value).toBe('bar')
     })
 
     it('should provide sync error for array field', () => {
@@ -343,8 +343,8 @@ const describeField = (name, structure, combineReducers, expect) => {
         </Provider>
       )
       expect(input).toHaveBeenCalled()
-      expect(input.calls[0].arguments[0].valid).toBe(false)
-      expect(input.calls[0].arguments[0].error).toBe('bar error')
+      expect(input.calls[ 0 ].arguments[ 0 ].valid).toBe(false)
+      expect(input.calls[ 0 ].arguments[ 0 ].error).toBe('bar error')
     })
 
     it('should provide access to rendered component', () => {
@@ -419,7 +419,7 @@ const describeField = (name, structure, combineReducers, expect) => {
       expect(input.calls[ 1 ].arguments[ 0 ].touched).toBe(true)
     })
 
-    it('should reconnect when props change', () => {
+    it('should rerender when props change', () => {
       const store = makeStore()
       const input = createSpy(props => <input {...props}/>).andCallThrough()
       class Form extends Component {
@@ -453,6 +453,62 @@ const describeField = (name, structure, combineReducers, expect) => {
       expect(input.calls[ 1 ].arguments[ 0 ].foo).toBe('qux')
       expect(input.calls[ 1 ].arguments[ 0 ].bar).toBe('baz')
     })
+
+    // ----------------------------------------------
+    // Uncomment this to confirm that #1024 is fixed.
+    // ----------------------------------------------
+    // it('should rerender when sync error changes', () => {
+    //   const store = makeStore({
+    //     testForm: {
+    //       values: {
+    //         password: 'redux-form sucks',
+    //         confirm: 'redux-form rocks'
+    //       }
+    //     }
+    //   })
+    //   const passwordInput = createSpy(props => <input {...props}/>).andCallThrough()
+    //   const confirmInput = createSpy(props => <input {...props}/>).andCallThrough()
+    //   const validate = ({ password, confirm }) =>
+    //     password === confirm ? {} : { confirm: 'Must match!' }
+    //   class Form extends Component {
+    //     render() {
+    //       return (<div>
+    //         <Field name="password" component={passwordInput}/>
+    //         <Field name="confirm" component={confirmInput}/>
+    //       </div>)
+    //     }
+    //   }
+    //   const TestForm = reduxForm({
+    //     form: 'testForm',
+    //     validate
+    //   })(Form)
+    //   const dom = TestUtils.renderIntoDocument(
+    //     <Provider store={store}>
+    //       <TestForm/>
+    //     </Provider>
+    //   )
+    //
+    //   // password input rendered
+    //   expect(passwordInput).toHaveBeenCalled()
+    //   expect(passwordInput.calls.length).toBe(1)
+    //
+    //   // confirm input rendered with error
+    //   expect(confirmInput).toHaveBeenCalled()
+    //   expect(confirmInput.calls.length).toBe(1)
+    //   expect(confirmInput.calls[ 0 ].arguments[ 0 ].valid).toBe(false)
+    //   expect(confirmInput.calls[ 0 ].arguments[ 0 ].error).toBe('Must match!')
+    //
+    //   // update password field so that they match
+    //   passwordInput.calls[ 0 ].arguments[ 0 ].onChange('redux-form rocks')
+    //
+    //   // password input rerendered
+    //   expect(passwordInput.calls.length).toBe(2)
+    //
+    //   // confirm input should also rerender, but with no error
+    //   expect(confirmInput.calls.length).toBe(2)
+    //   expect(confirmInput.calls[ 1 ].arguments[ 0 ].valid).toBe(true)
+    //   expect(confirmInput.calls[ 1 ].arguments[ 0 ].error).toBe(undefined)
+    // })
   })
 }
 
