@@ -41,7 +41,7 @@ const createConnectedField = ({
 
     render() {
       const { component, withRef, ...rest } = this.props
-      const props = createFieldProps(getIn,
+      let props = createFieldProps(getIn,
         name,
         rest,
         asyncValidate
